@@ -19,3 +19,17 @@ class AzureGPT:
 
     def llm_call(self, messages):
         return self.chat(messages)
+
+
+if __name__ == "__main__":
+    import config
+
+    chater = AzureGPT(
+        config.deployment_name,
+        config.openai_api_type,
+        config.openai_api_key,
+        config.openai_api_base,
+        config.openai_api_version,
+    )
+    for chunk in chater.chat.stream([HumanMessage(content="Hello")]):
+        print(chunk)
