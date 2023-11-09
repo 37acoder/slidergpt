@@ -40,6 +40,7 @@ def transform_sesssion_state_to_messages(messages):
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
+
 if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
@@ -54,3 +55,11 @@ if prompt := st.chat_input():
             result += chunk.content
             text_element.markdown(result)
     st.session_state.messages.append({"role": "assistant", "content": result})
+
+
+def clear_session():
+    st.session_state.messages = st.session_state.messages[:1]
+
+
+if len(st.session_state.messages) > 1:
+    st.button("clear", on_click=clear_session)
