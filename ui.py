@@ -44,6 +44,7 @@ for msg in st.session_state.messages:
 if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
+    status = st.status("Generating...")
     response = chater.chat.stream(
         transform_sesssion_state_to_messages(st.session_state.messages)
     )
@@ -51,9 +52,9 @@ if prompt := st.chat_input():
     with st.chat_message("assistant"):
         text_element = st.markdown(result)
         for chunk in response:
-            print(chunk)
             result += chunk.content
             text_element.markdown(result)
+    status.update(label="complete", state="complete", expanded=False)
     st.session_state.messages.append({"role": "assistant", "content": result})
 
 
