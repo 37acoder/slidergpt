@@ -4,9 +4,12 @@ from azure import AzureGPT
 import config
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
+import auth as _
+
 with st.sidebar:
     deployment_name = st.selectbox("deployment_name", ["gpt35-16k", "gpt4-32k"])
 
+print(config.openai_api_version)
 chater = AzureGPT(
     deployment_name or config.deployment_name,
     config.openai_api_type,
