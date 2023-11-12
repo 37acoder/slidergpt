@@ -11,12 +11,21 @@ if "messages" not in st.session_state:
     st.session_state["messages"] = [
         {"role": "assistant", "content": "Hello, I'm a chatbot. How can I help you?"}
     ]
-    
+
 with st.sidebar:
     deployment_name = st.selectbox("deployment_name", ["gpt35-16k", "gpt4-32k"])
     historyUI = history.HistoryUIComponent()
 
-print(config.openai_api_version)
+    def save_session():
+        historyUI.history_manager.add(st.session_state.title, st.session_state.messages)
+
+    def on_save_button_click():
+        st.text_input(label="", value="Untitled", key="title")
+        st.button("save", on_click=save_session)
+
+    st.button("save", on_click=on_save_button_click)
+
+
 chater = AzureGPT(
     deployment_name or config.deployment_name,
     config.openai_api_type,
@@ -26,7 +35,9 @@ chater = AzureGPT(
 )
 
 
-st.title("💬Personal ChatGPT UI")
+st.title("💬Personal ChatGPT UI"
+
+)
 def transform_dict_to_msg(data):
     if data["role"] == "user":
         return HumanMessage(content=data["content"])
@@ -65,11 +76,6 @@ if prompt := st.chat_input():
 def clear_session():
     st.session_state.messages = st.session_state.messages[:1]
 
-def save_session():
-    historyUI.history_manager.add(st.session_state.title, st.session_state.messages)
 
 if len(st.session_state.messages) > 1:
     st.button("clear", on_click=clear_session)
-    t1, t2 = st.columns(2)
-    t1.text_input(label="", value="Untitled", key="title")
-    t2.button("save", on_click=save_session)
