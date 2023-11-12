@@ -3,11 +3,18 @@ import streamlit as st
 from azure import AzureGPT
 import config
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
-
+import history
 import auth as _
 
+
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [
+        {"role": "assistant", "content": "Hello, I'm a chatbot. How can I help you?"}
+    ]
+    
 with st.sidebar:
     deployment_name = st.selectbox("deployment_name", ["gpt35-16k", "gpt4-32k"])
+    historyUI = history.HistoryUIComponent()
 
 print(config.openai_api_version)
 chater = AzureGPT(
@@ -20,12 +27,6 @@ chater = AzureGPT(
 
 
 st.title("💬Personal ChatGPT UI")
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [
-        {"role": "assistant", "content": "Hello, I'm a chatbot. How can I help you?"}
-    ]
-
-
 def transform_dict_to_msg(data):
     if data["role"] == "user":
         return HumanMessage(content=data["content"])
@@ -64,6 +65,11 @@ if prompt := st.chat_input():
 def clear_session():
     st.session_state.messages = st.session_state.messages[:1]
 
+def save_session():
+    historyUI.history_manager.add(st.session_state.title, st.session_state.messages)
 
 if len(st.session_state.messages) > 1:
     st.button("clear", on_click=clear_session)
+    t1, t2 = st.columns(2)
+    t1.text_input(label="", value="Untitled", key="title")
+    t2.button("save", on_click=save_session)
