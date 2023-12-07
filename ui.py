@@ -4,7 +4,9 @@ from azure import AzureGPT
 import config
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
-import auth as _
+import auth 
+if not auth.check_password():
+    st.stop()  # Do not continue if check_password is not True.
 
 with st.sidebar:
     deployment_name = st.selectbox("deployment_name", ["gpt35-16k", "gpt4-32k"])

@@ -28,5 +28,7 @@ def check_password():
     return False
 
 
-if not check_password():
+pw = check_password()
+print(pw)
+if not pw:
     st.stop()  # Do not continue if check_password is not True.
